@@ -41,19 +41,17 @@ jobs:
     # BUILD LAMBDA LAYER
     ##################################################
 
+
     - name: Build Lambda Layer
       run: |
 
         cd layer
 
-        docker build -t lambda-layer-builder .
+        mkdir -p python
 
-        docker create --name extract lambda-layer-builder
+        pip install -r requirements.txt -t python
 
-        docker cp extract:/build/layer.zip .
-
-        docker rm -f extract
-
+        zip -r layer.zip python
     ##################################################
     # TERRAFORM INIT
     ##################################################
