@@ -13,14 +13,14 @@ jobs:
     steps:
 
     ##################################################
-    # CHECKOUT CODE
+    # CHECKOUT
     ##################################################
 
     - name: Checkout
       uses: actions/checkout@v4
 
     ##################################################
-    # CONFIGURE AWS
+    # AWS
     ##################################################
 
     - name: Configure AWS Credentials
@@ -31,39 +31,49 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     ##################################################
-    # SETUP TERRAFORM
+    # PYTHON
+    ##################################################
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    ##################################################
+    # BUILD LAYER
+    ##################################################
+
+    - name: Build Lambda Layer
+      run: |
+
+        mkdir -p layer/python
+
+        pip install -r layer/requirements.txt -t layer/python
+
+        cd layer
+
+        zip -r layer.zip python
+
+    ##################################################
+    # DEBUG
+    ##################################################
+
+    - name: Verify Layer ZIP
+      run: |
+
+        ls -lah layer
+
+    ##################################################
+    # TERRAFORM
     ##################################################
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    ##################################################
-    # BUILD LAMBDA LAYER
-    ##################################################
-
-
-    - name: Build Lambda Layer
-      run: |
-
-        cd layer
-
-        mkdir -p python
-
-        pip install -r requirements.txt -t python
-
-        zip -r layer.zip python
-    ##################################################
-    # TERRAFORM INIT
-    ##################################################
-
     - name: Terraform Init
       run: |
         cd terraform
         terraform init
-
-    ##################################################
-    # TERRAFORM APPLY
-    ##################################################
 
     - name: Terraform Apply
       run: |
