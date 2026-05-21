@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v4
 
     ##################################################
-    # AWS LOGIN
+    # CONFIGURE AWS
     ##################################################
 
     - name: Configure AWS Credentials
@@ -38,13 +38,34 @@ jobs:
       uses: hashicorp/setup-terraform@v3
 
     ##################################################
-    # TERRAFORM APPLY
+    # BUILD LAMBDA LAYER
+    ##################################################
+
+    - name: Build Lambda Layer
+      run: |
+
+        cd layer
+
+        docker build -t lambda-layer-builder .
+
+        docker create --name extract lambda-layer-builder
+
+        docker cp extract:/build/layer.zip .
+
+        docker rm -f extract
+
+    ##################################################
+    # TERRAFORM INIT
     ##################################################
 
     - name: Terraform Init
       run: |
         cd terraform
         terraform init
+
+    ##################################################
+    # TERRAFORM APPLY
+    ##################################################
 
     - name: Terraform Apply
       run: |
