@@ -10,7 +10,7 @@ data "archive_file" "lambda_zip" {
 # The layer.zip is created by GitHub Actions and stored locally before tf apply.
 resource "aws_lambda_layer_version" "shared_layer" {
   filename            = "${path.module}/../layer/layer.zip"
-  layer_name          = "shared-python-layer"
+  layer_name = "shared-python-layer-${random_id.suffix.hex}"
   compatible_runtimes = ["python3.11"]
   source_code_hash    = filebase64sha256("${path.module}/../layer/layer.zip")
 
@@ -21,7 +21,8 @@ resource "aws_lambda_layer_version" "shared_layer" {
 
 # ── Lambda function ────────────────────────────────────────────────────────────
 resource "aws_lambda_function" "trigger_lambda" {
-  function_name    = "trigger-step-function"
+
+  function_name = "trigger-step-function-${random_id.suffix.hex}"
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   role             = aws_iam_role.lambda_role.arn
@@ -39,3 +40,4 @@ resource "aws_lambda_function" "trigger_lambda" {
 
   depends_on = [aws_lambda_layer_version.shared_layer]
 }
+

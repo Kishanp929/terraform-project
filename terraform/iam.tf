@@ -17,8 +17,8 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 }
 
 resource "aws_iam_policy" "lambda_sfn_policy" {
-  name = "lambda-start-sfn-policy"
-
+ 
+  name = "lambda-start-sfn-policy-${random_id.suffix.hex}"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{

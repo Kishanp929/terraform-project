@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_event_rule" "every_5_min" {
-  name                = "trigger-lambda-every-5-min"
+  name = "trigger-lambda-every-5-min-${random_id.suffix.hex}"
   schedule_expression = "rate(5 minutes)"
   state               = "ENABLED"
 }
@@ -16,3 +16,4 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.every_5_min.arn
 }
+
