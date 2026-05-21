@@ -1,7 +1,6 @@
 # ── Lambda execution role ──────────────────────────────────────────────────────
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda-step-trigger-role"
-
+  name_prefix = "lambda-step-trigger-role-"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -36,9 +35,9 @@ resource "aws_iam_role_policy_attachment" "lambda_sfn_attach" {
 }
 
 # ── Step Function execution role ───────────────────────────────────────────────
-resource "aws_iam_role" "step_function_role" {
-  name = "step-function-exec-role"
 
+resource "aws_iam_role" "step_function_role" {
+  name_prefix = "step-function-exec-role-"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
