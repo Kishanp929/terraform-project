@@ -1,0 +1,35 @@
+{
+  "Comment": "3-step demo workflow",
+  "StartAt": "StepOne",
+  "States": {
+    "StepOne": {
+      "Type": "Pass",
+      "Parameters": {
+        "step": "one",
+        "message": "Logging: workflow started",
+        "input.$": "$"
+      },
+      "ResultPath": "$.stepOne",
+      "Next": "StepTwo"
+    },
+    "StepTwo": {
+      "Type": "Pass",
+      "Parameters": {
+        "step": "two",
+        "message": "Transformation: data processed",
+        "transformed": true
+      },
+      "ResultPath": "$.stepTwo",
+      "Next": "StepThree"
+    },
+    "StepThree": {
+      "Type": "Pass",
+      "Parameters": {
+        "step": "three",
+        "message": "Finalised: workflow complete"
+      },
+      "ResultPath": "$.stepThree",
+      "End": true
+    }
+  }
+}
